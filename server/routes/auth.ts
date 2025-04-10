@@ -94,6 +94,6 @@ export const authRouter = new Hono<Context>()
     return c.json<SuccessResponse<{ username: string }>>({
       success: true,
       message: "User fetched",
-      data: user,
+      data: { username: user.username },
     });
   });
