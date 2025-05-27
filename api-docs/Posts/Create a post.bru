@@ -1,0 +1,25 @@
+meta {
+  name: Create a post
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/api/posts
+  body: formUrlEncoded
+  auth: inherit
+}
+
+headers {
+  Cookie: auth_session=dm3snybfmpg7bgpv7sc7qpn2xd7unestahqw4lgf; HttpOnly; Max-Age=2592000; Path=/; SameSite=Lax
+}
+
+body:form-urlencoded {
+  title: Hello, World
+  url: https://example.com
+}
+
+body:multipart-form {
+  username: harsh
+  password: 12345678
+}

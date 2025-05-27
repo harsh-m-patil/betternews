@@ -1,0 +1,12 @@
+meta {
+  name: Get logged in user
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:3000/api/auth/user
+  body: none
+  auth: inherit
+}
+
