@@ -1,0 +1,16 @@
+meta {
+  name: Comment on a post
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/api/posts/1/comment
+  body: formUrlEncoded
+  auth: inherit
+}
+
+body:form-urlencoded {
+  content: nice post
+}
+

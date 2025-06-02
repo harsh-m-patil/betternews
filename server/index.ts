@@ -12,71 +12,71 @@ const app = new Hono<Context>();
 app.use(logger());
 
 app.use("*", cors(), async (c, next) => {
-	const sessionId = lucia.readSessionCookie(c.req.header("Cookie") ?? "");
+  const sessionId = lucia.readSessionCookie(c.req.header("Cookie") ?? "");
 
-	if (!sessionId) {
-		c.set("user", null);
+  if (!sessionId) {
+    c.set("user", null);
 
-		c.set("session", null);
+    c.set("session", null);
 
-		return next();
-	}
+    return next();
+  }
 
-	const { session, user } = await lucia.validateSession(sessionId);
+  const { session, user } = await lucia.validateSession(sessionId);
 
-	if (session && session.fresh) {
-		c.header("Set-Cookie", lucia.createSessionCookie(session.id).serialize(), {
-			append: true,
-		});
-	}
+  if (session && session.fresh) {
+    c.header("Set-Cookie", lucia.createSessionCookie(session.id).serialize(), {
+      append: true,
+    });
+  }
 
-	if (!session) {
-		c.header("Set-Cookie", lucia.createBlankSessionCookie().serialize(), {
-			append: true,
-		});
-	}
+  if (!session) {
+    c.header("Set-Cookie", lucia.createBlankSessionCookie().serialize(), {
+      append: true,
+    });
+  }
 
-	c.set("session", session);
+  c.set("session", session);
 
-	c.set("user", user);
+  c.set("user", user);
 
-	return next();
+  return next();
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const routes = app
-	.basePath("/api")
-	.route("/auth", authRouter)
-	.route("/posts", postRouter);
+  .basePath("/api")
+  .route("/auth", authRouter)
+  .route("/posts", postRouter);
 
 app.onError((err, c) => {
-	if (err instanceof HTTPException) {
-		const errResponse =
-			err.res ??
-			c.json<ErrorResponse>(
-				{
-					success: false,
-					error: err.message,
-					isFormError:
-						err.cause && typeof err.cause === "object" && "form" in err.cause
-							? err.cause.form === true
-							: false,
-				},
-				err.status,
-			);
+  if (err instanceof HTTPException) {
+    const errResponse =
+      err.res ??
+      c.json<ErrorResponse>(
+        {
+          success: false,
+          error: err.message,
+          isFormError:
+            err.cause && typeof err.cause === "object" && "form" in err.cause
+              ? err.cause.form === true
+              : false,
+        },
+        err.status,
+      );
 
-		return errResponse;
-	}
-	return c.json<ErrorResponse>(
-		{
-			success: false,
-			error:
-				process.env.NODE_ENV === "production"
-					? "Internal server error"
-					: err.stack ?? err.message,
-		},
-		500,
-	);
+    return errResponse;
+  }
+  return c.json<ErrorResponse>(
+    {
+      success: false,
+      error:
+        process.env.NODE_ENV === "production"
+          ? "Internal server error"
+          : (err.stack ?? err.message),
+    },
+    500,
+  );
 });
 
 export default app;
