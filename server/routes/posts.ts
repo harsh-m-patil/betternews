@@ -246,7 +246,7 @@ export const postRouter = new Hono<Context>()
       }),
     ),
     async (c) => {
-      const user = c.get("user")!;
+      const user = c.get("user");
       const { id } = c.req.valid("param");
       const { limit, page, sortBy, order, includeChildren } =
         c.req.valid("query");
