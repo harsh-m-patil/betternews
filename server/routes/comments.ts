@@ -13,7 +13,7 @@ import {
   type SuccessResponse,
 } from "@/shared/types";
 import { zValidator } from "@hono/zod-validator";
-import { and, asc, countDistinct, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, countDistinct, desc, eq, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
