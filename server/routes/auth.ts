@@ -38,7 +38,10 @@ export const authRouter = new Hono<Context>()
       );
     } catch (error) {
       if (error instanceof postgres.PostgresError && error.code === "23505") {
-        throw new HTTPException(409, { message: "User already exists" });
+        throw new HTTPException(409, {
+          message: "username already used",
+          cause: { form: true },
+        });
       }
 
       throw new HTTPException(500, { message: "Failed to create error" });
@@ -54,7 +57,10 @@ export const authRouter = new Hono<Context>()
       .limit(1);
 
     if (!existingUser) {
-      throw new HTTPException(401, { message: "Incorrect username" });
+      throw new HTTPException(401, {
+        message: "Incorrect username",
+        cause: { form: true },
+      });
     }
 
     const validPassword = await Bun.password.verify(
@@ -63,7 +69,10 @@ export const authRouter = new Hono<Context>()
     );
 
     if (!validPassword) {
-      throw new HTTPException(401, { message: "Incorrect password" });
+      throw new HTTPException(401, {
+        message: "Incorrect password",
+        cause: { form: true },
+      });
     }
 
     const session = await lucia.createSession(existingUser.id, { username });
