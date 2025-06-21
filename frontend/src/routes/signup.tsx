@@ -1,4 +1,9 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  redirect,
+  useNavigate,
+} from "@tanstack/react-router";
 import { z } from "zod";
 import { fallback, zodSearchValidator } from "@tanstack/router-zod-adapter";
 import { useForm } from "@tanstack/react-form";
@@ -134,6 +139,12 @@ function Signup() {
                   </Button>
                 )}
               />
+            </div>
+            <div className="mt-4 text-center text-sm">
+              Already have an account{" "}
+              <Link to="/login" className="underline">
+                Log In
+              </Link>
             </div>
           </CardContent>
         </form>
