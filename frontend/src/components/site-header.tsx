@@ -40,7 +40,7 @@ export default function Header() {
           </nav>
         </div>
 
-        <div className="hidden items-center space-x-4 md:block">
+        <div className="hidden items-center space-x-4 md:flex">
           {user ? (
             <>
               <span>{user}</span>
@@ -48,7 +48,7 @@ export default function Header() {
                 asChild
                 size="sm"
                 variant="secondary"
-                className="hover:bg-secondary-foreground/70 bg-secondary-foreground text-white"
+                className="bg-slate-800 text-white hover:bg-slate-800/70"
               >
                 <a href="/api/auth/logout">Log out</a>
               </Button>
