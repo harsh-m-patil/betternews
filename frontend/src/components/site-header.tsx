@@ -34,7 +34,7 @@ export default function Header() {
             <Link to="/" className="hover:underline">
               top
             </Link>
-            <Link to="/" className="hover:underline">
+            <Link to="/submit" className="hover:underline">
               submit
             </Link>
           </nav>
@@ -78,13 +78,17 @@ export default function Header() {
               </SheetDescription>
             </SheetHeader>
             <nav className="flex flex-col space-y-4 p-4">
-              <Link onClick={closeSheet} className="hover:underline">
+              <Link to="/" onClick={closeSheet} className="hover:underline">
                 new
               </Link>
-              <Link onClick={closeSheet} className="hover:underline">
+              <Link to="/" onClick={closeSheet} className="hover:underline">
                 top
               </Link>
-              <Link onClick={closeSheet} className="hover:underline">
+              <Link
+                to="/submit"
+                onClick={closeSheet}
+                className="hover:underline"
+              >
                 submit
               </Link>
               {user ? (
