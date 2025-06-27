@@ -1,21 +1,24 @@
+import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
+import { eq } from "drizzle-orm";
+
 import { db } from "@/adapter";
 import type { Context } from "@/context";
 import { userTable } from "@/db/schemas/auth";
 import { lucia } from "@/lucia";
-import { loginSchema } from "@/shared/types";
-import { zValidator } from "@hono/zod-validator";
-import type { SuccessResponse } from "@/shared/types";
-import { Hono } from "hono";
-import { generateId } from "lucia";
-import postgres from "postgres";
-import { HTTPException } from "hono/http-exception";
-import { eq } from "drizzle-orm";
 import { loggedIn } from "@/middleware/loggenIn";
+import { zValidator } from "@hono/zod-validator";
+import bcrypt from "bcryptjs";
+import { generateId } from "lucia";
+
+import { loginSchema } from "@/shared/types";
+import type { SuccessResponse } from "@/shared/types";
+import { isPgErrorWithCode } from "@/lib/is-pg-error";
 
 export const authRouter = new Hono<Context>()
   .post("/signup", zValidator("form", loginSchema), async (c) => {
     const { username, password } = c.req.valid("form");
-    const passwordHash = await Bun.password.hash(password);
+    const passwordHash = await bcrypt.hash(password, 12);
     const userId = generateId(15);
 
     try {
@@ -37,7 +40,7 @@ export const authRouter = new Hono<Context>()
         201,
       );
     } catch (error) {
-      if (error instanceof postgres.PostgresError && error.code === "23505") {
+      if (isPgErrorWithCode(error) && error.code === "23505") {
         throw new HTTPException(409, {
           message: "username already used",
           cause: { form: true },
@@ -63,7 +66,7 @@ export const authRouter = new Hono<Context>()
       });
     }
 
-    const validPassword = await Bun.password.verify(
+    const validPassword = await bcrypt.compare(
       password,
       existingUser.password_hash,
     );

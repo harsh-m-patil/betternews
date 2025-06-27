@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { insertCommentsSchema } from "../server/db/schemas/comments";
-import { insertPostSchema } from "../server/db/schemas/posts";
-import type { ApiRoutes } from "../server/index";
+import { insertCommentsSchema } from "../api/db/schemas/comments";
+import { insertPostSchema } from "../api/db/schemas/posts";
+import type { ApiRoutes } from "../api/index";
 
 export { type ApiRoutes };
 

@@ -1,35 +1,36 @@
 {
 	"name": "betternews",
 	"scripts": {
-		"dev": "bun run --hot server/index.ts",
+		"start": "bun api/index.ts",
+		"dev": "bun --watch api/index.ts",
 		"format:write": "prettier . --write",
 		"format:check": "prettier . --check",
 		"lint:server": "cd server && eslint .",
-		"lint:frontend": "cd frontend && eslint .",
-		"start": "bun server/index.ts"
+		"lint:frontend": "cd frontend && eslint ."
 	},
 	"dependencies": {
 		"@eslint/json": "^0.12.0",
 		"@hono/zod-validator": "^0.4.1",
 		"@lucia-auth/adapter-drizzle": "^1.1.0",
+		"bcryptjs": "^3.0.2",
 		"drizzle-orm": "^0.34.1",
 		"drizzle-zod": "^0.5.1",
 		"hono": "^4.8.2",
 		"lucia": "^3.2.1",
-		"postgres": "^3.4.4",
+		"postgres": "^3.4.7",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.0",
 		"@eslint/js": "^9.12.0",
 		"@ianvs/prettier-plugin-sort-imports": "^4.3.1",
-		"@types/bun": "latest",
 		"drizzle-kit": "^0.25.0",
 		"eslint": "^9.12.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-drizzle": "^0.2.3",
 		"globals": "^15.10.0",
 		"prettier": "^3.3.3",
-		"typescript-eslint": "^8.8.1"
+		"typescript-eslint": "^8.8.1",
+		"vercel": "^32.4.1"
 	}
 }

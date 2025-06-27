@@ -1,13 +1,15 @@
-import type { ErrorResponse } from "@/shared/types";
 import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
 import { cors } from "hono/cors";
+import { HTTPException } from "hono/http-exception";
+import { logger } from "hono/logger";
+
+import type { ErrorResponse } from "@/shared/types";
+
 import type { Context } from "./context";
 import { lucia } from "./lucia";
 import { authRouter } from "./routes/auth";
-import { logger } from "hono/logger";
-import { postRouter } from "./routes/posts";
 import { commentsRouter } from "./routes/comments";
+import { postRouter } from "./routes/posts";
 
 const app = new Hono<Context>();
 app.use(logger());

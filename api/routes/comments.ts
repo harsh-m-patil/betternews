@@ -1,10 +1,16 @@
+import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
+import { and, asc, countDistinct, desc, eq, sql } from "drizzle-orm";
+
 import { db } from "@/adapter";
 import type { Context } from "@/context";
 import { commentsTable } from "@/db/schemas/comments";
 import { postsTable } from "@/db/schemas/posts";
 import { commentsUpvoteTable } from "@/db/schemas/upvotes";
-import { getISOFormatDateQuery } from "@/lib/utils";
 import { loggedIn } from "@/middleware/loggenIn";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+
 import {
   createCommentsSchema,
   paginationSchema,
@@ -12,11 +18,7 @@ import {
   type PaginatedResponse,
   type SuccessResponse,
 } from "@/shared/types";
-import { zValidator } from "@hono/zod-validator";
-import { and, asc, countDistinct, desc, eq, sql } from "drizzle-orm";
-import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
-import { z } from "zod";
+import { getISOFormatDateQuery } from "@/lib/utils";
 
 export const commentsRouter = new Hono<Context>()
   .post(
@@ -152,34 +154,40 @@ export const commentsRouter = new Hono<Context>()
         return updated.points;
       });
 
-      return c.json<SuccessResponse<{ count: number; commentUpvotes: { userId: string }[] }>>(
+      return c.json<
+        SuccessResponse<{ count: number; commentUpvotes: { userId: string }[] }>
+      >(
         {
           success: true,
           message: "Comment updated",
           data: {
             count: points,
-            commentUpvotes: pointsChange === 1 ? [{ userId: user.id }] : []
+            commentUpvotes: pointsChange === 1 ? [{ userId: user.id }] : [],
           },
         },
         200,
       );
     },
-  ).get('/:id/comments',
+  )
+  .get(
+    "/:id/comments",
     zValidator("param", z.object({ id: z.coerce.number() })),
     zValidator("query", paginationSchema),
     async (c) => {
-      const user = c.get('user')
-      const { id } = c.req.valid('param')
-      const { limit, page, sortBy, order } = c.req.valid('query')
-      const offset = (page - 1) * limit
+      const user = c.get("user");
+      const { id } = c.req.valid("param");
+      const { limit, page, sortBy, order } = c.req.valid("query");
+      const offset = (page - 1) * limit;
 
-      const sortByColumn = sortBy === 'points' ? commentsTable.points : commentsTable.createdAt
-      const sortOrder = order === 'desc' ? desc(sortByColumn) : asc(sortByColumn)
+      const sortByColumn =
+        sortBy === "points" ? commentsTable.points : commentsTable.createdAt;
+      const sortOrder =
+        order === "desc" ? desc(sortByColumn) : asc(sortByColumn);
 
       const [count] = await db
         .select({ count: countDistinct(commentsTable.id) })
         .from(commentsTable)
-        .where(eq(commentsTable.parentCommentId, id))
+        .where(eq(commentsTable.parentCommentId, id));
 
       const comments = await db.query.comments.findMany({
         where: and(eq(commentsTable.parentCommentId, id)),
@@ -212,8 +220,8 @@ export const commentsRouter = new Hono<Context>()
         data: comments as Comment[],
         pagination: {
           page,
-          totalPages: Math.ceil(count!.count / limit) as number
-        }
-      })
-    }
-  )
+          totalPages: Math.ceil(count!.count / limit) as number,
+        },
+      });
+    },
+  );

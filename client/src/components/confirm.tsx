@@ -10,7 +10,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export function Confirm({ setShouldLeave }) {
+export function Confirm({
+  setShouldLeave,
+}: {
+  setShouldLeave: (val: boolean) => void;
+}) {
   return (
     <AlertDialog>
       <AlertDialogTrigger>Open</AlertDialogTrigger>
