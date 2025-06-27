@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { serveStatic } from "hono/bun";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
@@ -82,6 +83,9 @@ app.onError((err, c) => {
     500,
   );
 });
+
+app.get("*", serveStatic({ root: "./client/dist" }));
+app.get("*", serveStatic({ path: "./client/dist/index.html" }));
 
 export default app;
 export type ApiRoutes = typeof routes;
