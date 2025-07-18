@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   infiniteQueryOptions,
@@ -75,6 +75,7 @@ export const Route = createFileRoute("/post")({
 
 function Post() {
   const { id, sortBy, order } = Route.useSearch();
+  const testId = useId();
   const [activeReplyId, setActiveReplyId] = useState<number | null>(null);
   const { data } = useSuspenseQuery(postQueryOptions(id));
   const { data: user } = useQuery(userQueryOptions());
